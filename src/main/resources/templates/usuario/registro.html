@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Jose Bento</title>
+
+	<!-- Bootstrap core CSS -->
+	<link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link th:href="@{/css/heroic-features.css}" rel="stylesheet">
+	<link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: blue;">
+		<div class="container">
+			<a class="navbar-brand"  style="color: white;" th:href="@{/}">Biblioteca Jose Bento</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+				aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li   class="nav-item">
+						<a class="nav-link" th:href="@{/usuario/login}" style="color: white;">Login</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Page Content -->
+	<div class="container-fluid login-container">
+		<!-- Imagen a la izquierda -->
+		<div class="register-image">
+		</div>
+
+		<!-- Formulario de registro a la derecha -->
+		<div class="register-form">
+			<h2 class="register-header">Registro</h2>
+			<form th:action="@{/usuario/save}" method="post">
+				<div class="form-group">
+					<label for="nombres">Nombres:</label>
+					<input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ingrese sus nombres" autocomplete="off">
+				</div>
+				<div class="form-group">
+					<label for="apellido">Apellidos:</label>
+					<input type="text" class="form-control" id="apellidos" name="apellidos" required placeholder="Ingrese sus apellidos" autocomplete="off">
+				</div>
+
+				<div class="form-group">
+					<label for="email">Email:</label>
+					<input type="email" class="form-control" id="email" name="email" required placeholder="Ingrese su email" autocomplete="off">
+				</div>
+
+				<div class="form-group">
+					<label for="direccion">Dirección:</label>
+					<input type="text" class="form-control" id="direccion" name="direccion" required placeholder="Ingrese su dirección" autocomplete="off">
+				</div>
+
+				<div class="form-group">
+					<label for="pwd">Contraseña:</label>
+					<input type="password" class="form-control" id="password" name="password" required placeholder="Ingrese su contraseña" autocomplete="off">
+				</div>
+
+				<div class="form-group">
+					<button type="submit" class="btn btn-success btn-block">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<div th:include="usuario/template_usuario.html::footer"></div>
+
+	<!-- Bootstrap core JavaScript -->
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+</body>
+</html>

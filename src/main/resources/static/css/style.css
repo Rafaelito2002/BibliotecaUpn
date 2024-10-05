@@ -1,0 +1,62 @@
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 100vh;
+  }
+  
+  .login-form {
+    width: 40%; /* Tamaño más corto para los campos de texto */
+  }
+
+  .login-image {
+    background-image: url('/images/biblioteca.jpg'); /* Cambia esto por la URL de tu imagen */
+    background-size: cover;
+    background-position: left;
+    min-height: 100vh;
+    width: 50%; /* Tamaño de la imagen */
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+   /* Ocultar la imagen en dispositivos móviles y tabletas */
+   @media (max-width: 768px) {
+    .login-image {
+      display: none;
+    }
+    .login-form {
+      width: 100%; /* Aumenta el ancho del formulario en pantallas pequeñas */
+    }
+  }
+  /* Ocultar la imagen en dispositivos móviles y tabletas */
+  @media (max-width: 1030px) {
+    .login-image {
+      display: none;
+    }
+    .login-form {
+      width: 100%; /* Aumenta el ancho del formulario en pantallas pequeñas */
+    }
+    .register-form {
+      width: 100%; /* Expande el formulario al 100% del ancho */
+      padding: 0 20px;
+    }
+  }
+  .register-form {
+    width: 40%; /* Tamaño del formulario ajustado */
+    padding: 20px;
+  }
+  .register-image {
+    background-image: url('/images/register.jpg'); /* Cambia esto por la URL de tu imagen */
+    background-size: cover;
+    background-position: left;
+    min-height: 100vh;
+    width: 50%; /* Tamaño de la imagen */
+  }
+  .register-header{
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
