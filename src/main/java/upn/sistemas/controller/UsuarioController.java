@@ -39,12 +39,64 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/save")
-	public String save(Usuario usuario) {
-		logger.info("Usuario registro: {}",usuario);
+	public String save(Usuario usuario, Model model) {
+		logger.info("Usuario registro: {}", usuario);
+		
+		// Validaciones de nombre
+		String nombre = usuario.getNombre();
+		if (nombre == null || nombre.isEmpty()) {
+			model.addAttribute("error", "Por favor, complete estos campos.");
+			return "usuario/registro"; // Redirige de vuelta al formulario
+		}
+		
+		if (nombre.trim().length() < 3) {
+			model.addAttribute("error", "Escriba un nombre válido");
+			return "usuario/registro";
+		}
+		
+		if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+")) {
+			model.addAttribute("error", "El campo Nombres contiene caracteres no permitidos.");
+			return "usuario/registro";
+		}
+		
+		if (nombre.contains("  ")) {
+			model.addAttribute("error", "No espacios en blanco, por favor.");
+			return "usuario/registro";
+		}
+	
+		// Validaciones de contraseña
+		String password = usuario.getPassword();
+		if (password == null || password.isEmpty()) {
+			model.addAttribute("error", "Por favor, complete estos campos.");
+			return "usuario/registro"; // Redirige de vuelta al formulario
+		}
+	
+		if (password.length() < 8) {
+			model.addAttribute("error", "La contraseña debe tener al menos 8 caracteres.");
+			return "usuario/registro";
+		}
+	
+		if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+			model.addAttribute("error", "La contraseña debe incluir al menos un carácter especial.");
+			return "usuario/registro";
+		}
+	
+		if (!password.matches(".*[A-Z].*")) {
+			model.addAttribute("error", "La contraseña debe incluir al menos una letra mayúscula.");
+			return "usuario/registro";
+		}
+	
+		if (!password.matches(".*\\d.*")) {
+			model.addAttribute("error", "La contraseña debe incluir al menos un número.");
+			return "usuario/registro";
+		}
+	
+		// Si todas las validaciones son correctas
 		usuario.setTipo("USER");
 		usuarioService.save(usuario);
 		return "redirect:/";
 	}
+	
 	
 	@GetMapping("/login")
 	public String login() {

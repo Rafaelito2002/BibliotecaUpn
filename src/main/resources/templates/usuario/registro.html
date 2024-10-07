@@ -46,6 +46,12 @@
 		<!-- Formulario de registro a la derecha -->
 		<div class="register-form">
 			<h2 class="register-header">Registro</h2>
+			
+			<!-- Mostrar errores si existen -->
+			<div th:if="${error}" class="alert alert-danger" role="alert">
+				<p th:text="${error}"></p>
+			</div>
+
 			<form th:action="@{/usuario/save}" method="post">
 				<div class="form-group">
 					<label for="nombres">Nombres:</label>
