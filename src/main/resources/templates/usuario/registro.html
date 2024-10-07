@@ -42,7 +42,6 @@
 		<!-- Imagen a la izquierda -->
 		<div class="register-image">
 		</div>
-
 		<div class="register-form">
 			<h2 class="register-header">Registro</h2>
 		
@@ -54,25 +53,27 @@
 			<form th:action="@{/usuario/save}" method="post">
 				<div class="form-group">
 					<label for="nombres">Nombres:</label>
-					<input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ingrese sus nombres" autocomplete="off">
+					<input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ingrese sus nombres" th:value="${usuario.nombre}" autocomplete="off">
 				</div>
+				
 				<div class="form-group">
 					<label for="apellido">Apellidos:</label>
-					<input type="text" class="form-control" id="apellidos" name="apellidos" required placeholder="Ingrese sus apellidos" autocomplete="off">
+					<input type="text" class="form-control" id="apellidos" name="apellidos" required placeholder="Ingrese sus apellidos" th:value="${usuario.apellidos}" autocomplete="off">
 				</div>
 		
 				<div class="form-group">
 					<label for="email">Email:</label>
-					<input type="email" class="form-control" id="email" name="email" required placeholder="Ingrese su email" autocomplete="off">
+					<input type="email" class="form-control" id="email" name="email" required placeholder="Ingrese su email" th:value="${usuario.email}" autocomplete="off">
 				</div>
 		
 				<div class="form-group">
 					<label for="direccion">Dirección:</label>
-					<input type="text" class="form-control" id="direccion" name="direccion" required placeholder="Ingrese su dirección" autocomplete="off">
+					<input type="text" class="form-control" id="direccion" name="direccion" required placeholder="Ingrese su dirección" th:value="${usuario.direccion}" autocomplete="off">
 				</div>
 		
 				<div class="form-group">
 					<label for="pwd">Contraseña:</label>
+					<!-- El campo de contraseña no retiene el valor -->
 					<input type="password" class="form-control" id="password" name="password" required placeholder="Ingrese su contraseña" autocomplete="off">
 				</div>
 		
@@ -80,8 +81,7 @@
 					<button type="submit" class="btn btn-success btn-block">Guardar</button>
 				</div>
 			</form>
-		</div>
-		
+		</div>		
 	</div>
 
 	<!-- Footer -->
