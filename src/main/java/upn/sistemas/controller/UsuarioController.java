@@ -1,6 +1,8 @@
 package upn.sistemas.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -8,6 +10,8 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +23,6 @@ import upn.sistemas.model.Orden;
 import upn.sistemas.model.Usuario;
 import upn.sistemas.service.IOrdenService;
 import upn.sistemas.service.IUsuarioService;
-
 @Controller
 @RequestMapping("/usuario")
 public class UsuarioController {
@@ -39,64 +42,60 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/save")
-	public String save(Usuario usuario, Model model) {
+	public ResponseEntity<?> save(Usuario usuario, Model model) {
 		logger.info("Usuario registro: {}", usuario);
 		
 		// Validaciones de nombre
 		String nombre = usuario.getNombre();
 		if (nombre == null || nombre.isEmpty()) {
-			model.addAttribute("error", "Por favor, complete estos campos.");
-			return "usuario/registro"; // Redirige de vuelta al formulario
+			return ResponseEntity.badRequest().body("Por favor, complete estos campos.");
 		}
 		
 		if (nombre.trim().length() < 3) {
-			model.addAttribute("error", "Escriba un nombre válido");
-			return "usuario/registro";
+			return ResponseEntity.badRequest().body("Escriba un nombre válido");
 		}
 		
 		if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+")) {
-			model.addAttribute("error", "El campo Nombres contiene caracteres no permitidos.");
-			return "usuario/registro";
+			return ResponseEntity.badRequest().body("El campo Nombres contiene caracteres no permitidos.");
 		}
 		
 		if (nombre.contains("  ")) {
-			model.addAttribute("error", "No espacios en blanco, por favor.");
-			return "usuario/registro";
+			return ResponseEntity.badRequest().body("No espacios en blanco, por favor.");
 		}
-	
+
 		// Validaciones de contraseña
 		String password = usuario.getPassword();
 		if (password == null || password.isEmpty()) {
-			model.addAttribute("error", "Por favor, complete estos campos.");
-			return "usuario/registro"; // Redirige de vuelta al formulario
+			return ResponseEntity.badRequest().body("Por favor, complete estos campos.");
 		}
-	
+
 		if (password.length() < 8) {
-			model.addAttribute("error", "La contraseña debe tener al menos 8 caracteres.");
-			return "usuario/registro";
+			return ResponseEntity.badRequest().body("La contraseña debe tener al menos 8 caracteres.");
 		}
-	
+
 		if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
-			model.addAttribute("error", "La contraseña debe incluir al menos un carácter especial.");
-			return "usuario/registro";
+			return ResponseEntity.badRequest().body("La contraseña debe incluir al menos un carácter especial.");
 		}
-	
+
 		if (!password.matches(".*[A-Z].*")) {
-			model.addAttribute("error", "La contraseña debe incluir al menos una letra mayúscula.");
-			return "usuario/registro";
+			return ResponseEntity.badRequest().body("La contraseña debe incluir al menos una letra mayúscula.");
 		}
-	
+
 		if (!password.matches(".*\\d.*")) {
-			model.addAttribute("error", "La contraseña debe incluir al menos un número.");
-			return "usuario/registro";
+			return ResponseEntity.badRequest().body("La contraseña debe incluir al menos un número.");
 		}
-	
+
 		// Si todas las validaciones son correctas
 		usuario.setTipo("USER");
 		usuarioService.save(usuario);
-		return "redirect:/";
+		
+		// Creamos la respuesta
+		Map<String, String> response = new HashMap<>();
+		response.put("status", "success");
+		response.put("message", "Usuario registrado exitosamente");
+		
+		return ResponseEntity.ok(response);
 	}
-	
 	
 	@GetMapping("/login")
 	public String login() {
@@ -104,23 +103,38 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/acceder")
-	public String acceder(Usuario usuario, HttpSession session) {
+	public ResponseEntity<?> acceder(Usuario usuario, HttpSession session) {
 		logger.info("Accesos : {}", usuario);
-		Optional<Usuario> user=usuarioService.findByEmail(usuario.getEmail());
-		//logger.info("Usuario de db: {}", user.get());
+		Optional<Usuario> user = usuarioService.findByEmail(usuario.getEmail());
+		
 		if(user.isPresent()) {
 			session.setAttribute("idusuario", user.get().getId());
-			if(user.get().getTipo().equals("ADMIN")) {
-				return "redirect:/administrador";
-			}else if(user.get().getTipo().equals("BIBLIOTECARIO")) {
-					return "redirect:/bibliotecario";
-				}else {
-					return "redirect:/";
-				}
 			
-		}else {
+			// Creamos un nombre completo combinando nombre y apellidos
+			String nombreCompleto = user.get().getNombre();
+			if (user.get().getApellidos() != null && !user.get().getApellidos().isEmpty()) {
+				nombreCompleto += " " + user.get().getApellidos();
+			}
+			
+			// Determinamos la URL de redirección según el tipo de usuario
+			String redirectUrl;
+			if(user.get().getTipo().equals("ADMIN")) {
+				redirectUrl = "/administrador";
+			} else if(user.get().getTipo().equals("BIBLIOTECARIO")) {
+				redirectUrl = "/bibliotecario";
+			} else {
+				redirectUrl = "/";
+			}
+			
+			// Creamos la respuesta con el nombre completo y la URL de redirección
+			Map<String, String> response = new HashMap<>();
+			response.put("nombreCompleto", nombreCompleto);
+			response.put("redirect", redirectUrl);
+			
+			return ResponseEntity.ok().body(response);
+		} else {
 			logger.info("Usuario no existe");
-			return "redirect:/";
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado");
 		}
 	}
 	

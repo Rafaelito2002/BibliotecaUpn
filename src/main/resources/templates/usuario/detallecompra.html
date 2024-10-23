@@ -53,13 +53,15 @@
               <thead>
                 <tr>
                   <th scope="col">Cantidad</th>
-                  <th scope="col">Producto</th>                                   
+                  <th scope="col">Producto</th>     
+                  <th scope="col">Fecha de Devolución</th>                              
                 </tr>
               </thead>
               <tbody>
                 <tr th:each="detalle:${detalles}">
                   <td  th:text="${detalle.cantidad}"></td>
                   <td th:text="${detalle.nombre}"></td>
+                  <td>Plazo máximo "4 Días" </td>
                 </tr>
               </tbody>
             </table>

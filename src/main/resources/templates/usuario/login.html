@@ -90,5 +90,74 @@
     });
   </script>
 
+
+  <!-- Modal de bienvenida actualizado -->
+<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="welcomeModalLabel">¡Bienvenido!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bienvenido/a <span id="fullName" class="font-weight-bold"></span> a la Biblioteca Jose Bento</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script actualizado -->
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  var emailInput = document.getElementById("email");
+  var emailError = document.getElementById("emailError");
+  var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (!emailPattern.test(emailInput.value)) {
+    emailError.style.display = "block";
+    return;
+  } else {
+    emailError.style.display = "none";
+  }
+
+  const formData = new FormData(this);
+  
+  try {
+    const response = await fetch(this.action, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // Actualizamos el nombre en el modal con el nombre completo del usuario
+      document.getElementById("fullName").textContent = data.nombreCompleto;
+      
+      // Mostramos el modal
+      $('#welcomeModal').modal('show');
+      
+      // Cuando se cierre el modal, redirigimos
+      $('#welcomeModal').on('hidden.bs.modal', function (e) {
+        window.location.href = data.redirect;
+      });
+    } else {
+      window.location.href = '/';
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    window.location.href = '/';
+  }
+});
+</script>
+
+
+
 </body>
 </html>
